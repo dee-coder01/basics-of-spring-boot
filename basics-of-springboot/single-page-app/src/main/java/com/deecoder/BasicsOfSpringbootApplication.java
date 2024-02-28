@@ -1,5 +1,7 @@
 package com.deecoder;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -43,9 +45,16 @@ public class BasicsOfSpringbootApplication {
 @Service
 class SpringService {
 
+	@Autowired
+	SpringRepository springRepository;
+
 	public boolean complexUserCheck(UserInfo userInfo) {
 		// Performing some very complex user verification 🙃
-		return true;
+		Optional<UserInfo> user = springRepository.findById(userInfo.getId());
+		if (user.isPresent())
+			return true;
+		else
+			return false;
 	}
 }
 
@@ -60,7 +69,16 @@ class UserInfo {
 		this.name = name;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
 }
 
-interface SpringRespository extends JpaRepository<UserInfo, Integer> {
+@Repository
+interface SpringRepository extends JpaRepository<UserInfo, Integer> {
 }
